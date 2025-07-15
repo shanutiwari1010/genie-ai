@@ -40,8 +40,10 @@ export function Header({ title, showBack, onBack }: HeaderProps) {
 
           {user && (
             <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-              <span className="sr-only">Logout</span>
+              Logout
+           <LogOut className="h-2 w-2" />
+           
+              {/* <span className="sr-only text-white">Logout</span> */}
             </Button>
           )}
         </div>
