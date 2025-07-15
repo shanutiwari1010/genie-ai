@@ -95,13 +95,13 @@ export function OTPForm({ phone, countryCode, expectedOTP, onBack }: OTPFormProp
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-white text-black">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={onBack}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div>
+          <div className="flex flex-col justify-center items-center gap-2">
             <CardTitle>Verify Your Phone</CardTitle>
             <CardDescription>
               Enter the 6-digit code sent to {countryCode}
@@ -120,18 +120,18 @@ export function OTPForm({ phone, countryCode, expectedOTP, onBack }: OTPFormProp
               type="text"
               placeholder="123456"
               maxLength={6}
-              className="text-center text-lg tracking-widest"
+              className="text-center bg-white text-lg tracking-widest"
             />
             {errors.otp && <p className="text-sm text-destructive">{errors.otp.message}</p>}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full  bg-gray-900 hover:bg-gray-950 text-white  dark:from-gray-900 dark:to-gray-800" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Verify OTP
           </Button>
 
           <div className="text-center">
-            <Button type="button" variant="link" onClick={handleResendOTP} disabled={isResending} className="text-sm">
+            <Button type="button" variant="link" onClick={handleResendOTP} disabled={isResending} className="text-sm  text-gray-950">
               {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Resend OTP
             </Button>
