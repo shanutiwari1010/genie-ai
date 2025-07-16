@@ -8,7 +8,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useChatroomActions } from "@/hooks/useChatroomActions";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { formatDistanceToNow } from "date-fns";
-import { Search, Trash2, MessageCircle, SquarePen } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
