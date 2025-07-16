@@ -1,4 +1,4 @@
-// lib/hooks/useChatroomActions.ts
+
 import { useToast } from "@/hooks/use-toast";
 import { useChatStore } from "@/lib/stores/chat-store";
 
