@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Paperclip, X, Mic } from "lucide-react";
+import Image from "next/image";
 
 interface MessageInputProps {
   onSendMessage: (content: string, image?: string) => void;
@@ -69,9 +70,11 @@ export function MessageInput({
     <div className="border-t bg-background p-4">
       {selectedImage && (
         <div className="mb-3 relative inline-block">
-          <img
-            src={selectedImage || "/placeholder.svg"}
+          <Image
+            width={100}
+            height={100}
             alt="Selected"
+            src={selectedImage || "/placeholder.svg"}
             className="max-h-20 rounded-md"
           />
           <Button

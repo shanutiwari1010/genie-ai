@@ -19,6 +19,7 @@ import { ThreadView } from "./thread-view";
 import { EmojiPicker } from "./emoji-picker";
 import { Button } from "@/components/ui/button";
 import { ReactionDisplay } from "./reaction-display";
+import Image from "next/image";
 
 interface MessageBubbleProps {
   message: Message;
@@ -51,6 +52,7 @@ export function MessageBubble({
         description: "Message copied to clipboard.",
       });
     } catch (error) {
+      console.error(error);
       toast.error("Error", {
         description: "Failed to copy message.",
       });
@@ -106,7 +108,9 @@ export function MessageBubble({
         >
           {message.image && (
             <div className="mb-2">
-              <img
+              <Image
+                width={100}
+                height={100}
                 src={message.image || "/placeholder.svg"}
                 alt="Uploaded image"
                 className="max-w-full h-auto rounded-md"
