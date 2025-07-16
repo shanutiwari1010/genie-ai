@@ -1,66 +1,50 @@
-"use client"
+"use client";
 
-import type React from "react"
+import React, { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { Search, Trash2, MessageCircle } from "lucide-react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { useChatStore } from "@/lib/stores/chat-store"
-import { useToast } from "@/hooks/use-toast"
-import { Search, Plus, Trash2, MessageCircle } from "lucide-react"
-import { useDebounce } from "@/hooks/use-debounce"
-import { formatDistanceToNow } from "date-fns"
+import { useToast } from "@/hooks/use-toast";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useChatStore } from "@/lib/stores/chat-store";
+
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ChatroomListProps {
-  onChatroomSelect: (id: string) => void
+  onChatroomSelect: (id: string) => void;
 }
 
 export function ChatroomList({ onChatroomSelect }: ChatroomListProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [newChatroomTitle, setNewChatroomTitle] = useState("")
-  const [isCreating, setIsCreating] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 300)
-  const { chatrooms, createChatroom, deleteChatroom } = useChatStore()
-  const { toast } = useToast()
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const { chatrooms, createChatroom, deleteChatroom } = useChatStore();
+  const { toast } = useToast();
 
   const filteredChatrooms = chatrooms.filter((room) =>
-    room.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
-  )
+    room.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+  );
 
-  const handleCreateChatroom = () => {
-    if (!newChatroomTitle.trim()) return
-
-    setIsCreating(true)
-    setTimeout(() => {
-      const id = createChatroom(newChatroomTitle.trim())
-      setNewChatroomTitle("")
-      setIsCreating(false)
-
-      toast({
-        title: "Chatroom Created",
-        description: `"${newChatroomTitle}" has been created successfully.`,
-      })
-
-      onChatroomSelect(id)
-    }, 500)
-  }
-
-  const handleDeleteChatroom = (id: string, title: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    deleteChatroom(id)
+  const handleDeleteChatroom = (
+    id: string,
+    title: string,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    deleteChatroom(id);
 
     toast({
       title: "Chatroom Deleted",
       description: `"${title}" has been deleted.`,
       variant: "destructive",
-    })
-  }
+    });
+  };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4">
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -72,34 +56,19 @@ export function ChatroomList({ onChatroomSelect }: ChatroomListProps) {
         />
       </div>
 
-      {/* Create New Chatroom */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Create New Chat</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Input
-            placeholder="Enter chatroom title..."
-            value={newChatroomTitle}
-            onChange={(e) => setNewChatroomTitle(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleCreateChatroom()}
-          />
-          <Button onClick={handleCreateChatroom} disabled={!newChatroomTitle.trim() || isCreating} className="w-full">
-            <Plus className="mr-2 h-4 w-4" />
-            {isCreating ? "Creating..." : "Create Chatroom"}
-          </Button>
-        </CardContent>
-      </Card>
-
       {/* Chatroom List */}
       <div className="space-y-2">
         {filteredChatrooms.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-8 text-center">
               <MessageCircle className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">{searchTerm ? "No chatrooms found" : "No chatrooms yet"}</p>
+              <p className="text-muted-foreground">
+                {searchTerm ? "No chatrooms found" : "No chatrooms yet"}
+              </p>
               <p className="text-sm text-muted-foreground mt-1">
-                {searchTerm ? "Try a different search term" : "Create your first chatroom to get started"}
+                {searchTerm
+                  ? "Try a different search term"
+                  : "Create your first chatroom to get started"}
               </p>
             </CardContent>
           </Card>
@@ -119,14 +88,18 @@ export function ChatroomList({ onChatroomSelect }: ChatroomListProps) {
                         {room.messages.length} messages
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(room.createdAt, { addSuffix: true })}
+                        {formatDistanceToNow(room.createdAt, {
+                          addSuffix: true,
+                        })}
                       </span>
                     </div>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => handleDeleteChatroom(room.id, room.title, e)}
+                    onClick={(e) =>
+                      handleDeleteChatroom(room.id, room.title, e)
+                    }
                     className="text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -138,5 +111,5 @@ export function ChatroomList({ onChatroomSelect }: ChatroomListProps) {
         )}
       </div>
     </div>
-  )
+  );
 }
