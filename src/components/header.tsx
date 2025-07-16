@@ -58,8 +58,10 @@ export function Header() {
               <BreadcrumbLink href="/chat">Chat</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{chatroom?.title}</BreadcrumbPage>
+            <BreadcrumbItem className="max-w-72">
+              <BreadcrumbPage className="truncate">
+                {chatroom?.title}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
