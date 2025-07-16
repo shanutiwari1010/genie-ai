@@ -48,7 +48,7 @@ export function MessageList({
     setIsNearBottom(isAtBottom);
     setShowScrollButton(!isAtBottom && messages.length > 5);
 
-    // Load more messages when scrolled to top
+    // Reverse infinite scroll: load more when at top
     if (scrollTop === 0 && hasMore && !isLoading) {
       onLoadMore();
     }
@@ -61,13 +61,12 @@ export function MessageList({
   }, [messages, isTyping, isNearBottom]);
 
   return (
-    <div className=" h-[calc(100vh_-10rem)] flex-1 relative">
+    <div className="h-[calc(100vh_-_10rem)] flex-1 relative">
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
         className="h-full overflow-y-auto chat-scroll p-4 space-y-4"
       >
-        {/* Loading indicator for older messages */}
         {isLoading && (
           <div className="flex justify-center py-4">
             <div className="space-y-2">
@@ -77,7 +76,6 @@ export function MessageList({
           </div>
         )}
 
-        {/* Messages */}
         {messages.map((message) => (
           <MessageBubble
             key={message.id}
@@ -88,13 +86,10 @@ export function MessageList({
           />
         ))}
 
-        {/* Typing indicator */}
         {isTyping && <TypingIndicator />}
-
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Scroll to bottom button */}
       {showScrollButton && (
         <Button
           onClick={scrollToBottom}
