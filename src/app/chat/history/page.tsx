@@ -12,6 +12,7 @@ import { Search, Trash2, MessageCircle, SquarePen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
 const ChatHistory = () => {
   const router = useRouter();
@@ -42,7 +43,7 @@ const ChatHistory = () => {
   });
 
   return (
-    <div className="m-4 md:px-0 flex flex-col gap-8 flex-wrap">
+    <div className="m-4 flex flex-col gap-8 flex-wrap">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div className="flex flex-col items-start gap-2">
           <h1 className="text-5xl sm:text-4xl md:text-4xl lg:text-5xl font-semibold">
@@ -71,12 +72,18 @@ const ChatHistory = () => {
       <div className="space-y-2 flex flex-col overflow-auto h-[calc(100vh_-13rem)]">
         {!loading && filteredChatrooms.length === 0 ? (
           <div className="flex flex-col items-center text-center max-w-sm mx-auto">
-            <img
+            <Image
+              priority
+              width={100}
+              height={100}
+              loading="eager"
               src="/timer.gif"
               alt="No conversations"
               className="w-[100px] h-[100px] rounded-2xl overflow-hidden"
             />
-            <h3 className="text-lg font-normal mt-4">You're All Caught Up</h3>
+            <h3 className="text-lg font-normal mt-4">
+              You&apos;re All Caught Up
+            </h3>
             <p className="text-muted-foreground mt-2">
               Feel free to explore the platform or check back later for fresh
               conversations. Stay Tuned!
@@ -87,7 +94,7 @@ const ChatHistory = () => {
           filteredChatrooms.map((room) => (
             <Card
               key={room.id}
-              className="cursor-pointer hover:bg-accent transition-colors"
+              className="max-w-6xl p-0 cursor-pointer hover:bg-accent transition-colors"
               onClick={() => handleChatRouting(room.id)}
             >
               <CardContent className="p-4">
