@@ -21,8 +21,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function Header() {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
   const { theme, setTheme } = useTheme();
+  const params = useParams<{ id: string }>();
+
   const { logout, user } = useAuthStore();
   const { getChatroom } = useChatStore();
   const chatroom = getChatroom(params.id);
@@ -44,23 +45,25 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <SidebarTrigger className="-ml-1" />
-      <Separator
-        orientation="vertical"
-        className="mr-2 data-[orientation=vertical]:h-4"
-      />
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbLink href="/chat">Chat</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{chatroom?.title}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <header className="flex h-14 shrink-0 items-center gap-2">
+      <div className="flex flex-1 items-center gap-2 px-3">
+        <SidebarTrigger />
+        <Separator
+          orientation="vertical"
+          className="mr-2 data-[orientation=vertical]:h-4"
+        />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbLink href="/chat">Chat</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{chatroom?.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
       <div className="flex ml-auto h-14 items-center px-4 gap-2">
         <Button
@@ -72,11 +75,10 @@ export function Header() {
           <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
-
         <Button
           size="sm"
           variant="ghost"
-          className="w-full justify-start"
+          className="justify-start"
           onClick={handleRoutetoHistory}
         >
           <History />
@@ -84,7 +86,7 @@ export function Header() {
         <Button
           size="sm"
           variant="ghost"
-          className="w-full justify-start"
+          className="justify-start"
           onClick={handleRoutetoNotifications}
         >
           <Bell />
