@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { Search, Trash2, MessageCircle } from "lucide-react";
+import { Search, Trash2, MessageCircle, SquarePen } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useChatStore } from "@/lib/stores/chat-store";
 
@@ -12,49 +12,55 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useChatroomActions } from "@/hooks/useChatroomActions";
 
 interface ChatroomListProps {
   onChatroomSelect: (id: string) => void;
 }
 
 export function ChatroomList({ onChatroomSelect }: ChatroomListProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const { chatrooms, createChatroom, deleteChatroom } = useChatStore();
-  const { toast } = useToast();
+  const { chatrooms } = useChatStore();
+  const { handleDeleteChatroom } = useChatroomActions();
 
   const filteredChatrooms = chatrooms.filter((room) =>
     room.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
-  const handleDeleteChatroom = (
-    id: string,
-    title: string,
-    e: React.MouseEvent
-  ) => {
-    e.stopPropagation();
-    deleteChatroom(id);
-
-    toast({
-      title: "Chatroom Deleted",
-      description: `"${title}" has been deleted.`,
-      variant: "destructive",
-    });
+  const handleNewChat = () => {
+    router.push(`/chat`);
   };
 
   return (
     <div className="space-y-4 px-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          placeholder="Search chatrooms..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
+      <div className="space-y-1.5 ">
+        {/* New Chatroom */}
+        <div
+          onClick={handleNewChat}
+          className="flex items-center hover:bg-accent rounded-lg"
+        >
+          <SquarePen />
+          <Button variant="ghost" className="p-2">
+            New chat
+          </Button>
+        </div>
+
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search chatrooms..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
       </div>
+
+      
 
       {/* Chatroom List */}
       <div className="space-y-2">
