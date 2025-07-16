@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import type { Message } from "@/lib/stores/chat-store"
-import { MessageBubble } from "./message-bubble"
-import { TypingIndicator } from "./typing-indicator"
-import { ChevronDown } from "lucide-react"
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Message } from "@/lib/stores/chat-store";
+import { MessageBubble } from "./message-bubble";
+import { TypingIndicator } from "./typing-indicator";
+import { ChevronDown } from "lucide-react";
 
 interface MessageListProps {
-  messages: Message[]
-  isTyping: boolean
-  onLoadMore: () => void
-  hasMore: boolean
-  isLoading: boolean
-  onReactionAdd: (messageId: string, emoji: string) => void
-  onReactionRemove: (messageId: string, reactionId: string) => void
-  onReply: (parentMessageId: string, content: string, image?: string) => void
+  messages: Message[];
+  isTyping: boolean;
+  onLoadMore: () => void;
+  hasMore: boolean;
+  isLoading: boolean;
+  onReactionAdd: (messageId: string, emoji: string) => void;
+  onReactionRemove: (messageId: string, reactionId: string) => void;
+  onReply: (parentMessageId: string, content: string, image?: string) => void;
 }
 
 export function MessageList({
@@ -29,39 +29,39 @@ export function MessageList({
   onReactionRemove,
   onReply,
 }: MessageListProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const [showScrollButton, setShowScrollButton] = useState(false)
-  const [isNearBottom, setIsNearBottom] = useState(true)
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [isNearBottom, setIsNearBottom] = useState(true);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleScroll = () => {
-    const container = messagesContainerRef.current
-    if (!container) return
+    const container = messagesContainerRef.current;
+    if (!container) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = container
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
 
-    setIsNearBottom(isAtBottom)
-    setShowScrollButton(!isAtBottom && messages.length > 5)
+    setIsNearBottom(isAtBottom);
+    setShowScrollButton(!isAtBottom && messages.length > 5);
 
     // Load more messages when scrolled to top
     if (scrollTop === 0 && hasMore && !isLoading) {
-      onLoadMore()
+      onLoadMore();
     }
-  }
+  };
 
   useEffect(() => {
     if (isNearBottom) {
-      scrollToBottom()
+      scrollToBottom();
     }
-  }, [messages, isTyping, isNearBottom])
+  }, [messages, isTyping, isNearBottom]);
 
   return (
-    <div className="flex-1 relative">
+    <div className=" h-[calc(100vh_-10rem)] flex-1 relative">
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
@@ -96,10 +96,14 @@ export function MessageList({
 
       {/* Scroll to bottom button */}
       {showScrollButton && (
-        <Button onClick={scrollToBottom} size="sm" className="absolute bottom-4 right-4 rounded-full shadow-lg">
+        <Button
+          onClick={scrollToBottom}
+          size="sm"
+          className="absolute bottom-4 right-4 rounded-full shadow-lg"
+        >
           <ChevronDown className="h-4 w-4" />
         </Button>
       )}
     </div>
-  )
+  );
 }
