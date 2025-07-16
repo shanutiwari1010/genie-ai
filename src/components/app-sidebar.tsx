@@ -60,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   placeholder="Search chats"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-0 border-none outline-none ring-white focus:ring-0 focus-within:ring-0 focus:border-none focus:outline-none focus-within:ring-white"
+                  className="p-0 border-none  outline-none ring-white focus:ring-0 focus-within:ring-0 focus:border-none focus:outline-none focus-within:ring-white dark:bg-transparent"
                   style={{ boxShadow: "none" }}
                 />
               </div>
