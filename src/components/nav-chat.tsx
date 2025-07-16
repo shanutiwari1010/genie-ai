@@ -26,7 +26,7 @@ import { Card, CardContent } from "./ui/card";
 
 export function NavChat({ searchTerm }: { searchTerm: string }) {
   const router = useRouter();
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { chatrooms } = useChatStore();
   const { handleDeleteChatroom } = useChatroomActions();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -38,6 +38,12 @@ export function NavChat({ searchTerm }: { searchTerm: string }) {
   const handleDeleteChat = (id: string, title: string, e: React.MouseEvent) => {
     handleDeleteChatroom(id, title, e);
     router.push(`/chat`);
+  };
+
+  const handleChatClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
@@ -62,7 +68,7 @@ export function NavChat({ searchTerm }: { searchTerm: string }) {
         {filteredChatrooms.map((item) => (
           <SidebarMenuItem key={item?.id}>
             <SidebarMenuButton asChild>
-              <Link href={`/chat/${item.id}`}>
+              <Link href={`/chat/${item.id}`} onClick={handleChatClick}>
                 <span className="truncate">{item.title}</span>
               </Link>
             </SidebarMenuButton>

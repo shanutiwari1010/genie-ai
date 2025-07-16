@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import { NavChat } from "./nav-chat";
@@ -27,6 +28,14 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [searchTerm, setSearchTerm] = useState("");
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleNewChatClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarContent className="p-1">
@@ -48,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
           <SidebarMenu className="mt-2">
             <SidebarMenuButton asChild>
-              <Link href="/chat">
+              <Link href="/chat" onClick={handleNewChatClick}>
                 <SquarePen />
                 New chat
               </Link>
