@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 
 const ChatGreeting = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const GREETING_KEYWORDS = [
     `Welcome User!`,
     "What do you want to know?",
@@ -17,7 +18,7 @@ const ChatGreeting = () => {
     setCurrentKeywordIndex(
       (prevIndex) => (prevIndex + 1) % GREETING_KEYWORDS.length
     );
-  }, []);
+  }, [GREETING_KEYWORDS]);
 
   useEffect(() => {
     const interval = setInterval(updateKeywordIndex, 3500);
