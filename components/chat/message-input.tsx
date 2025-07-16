@@ -1,38 +1,43 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
-import { Send, ImageIcon, X } from "lucide-react"
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Send, Paperclip, X, Mic } from "lucide-react";
+import { Tooltip } from "../ui/tooltip";
 
 interface MessageInputProps {
-  onSendMessage: (content: string, image?: string) => void
-  disabled?: boolean
-  placeholder?: string
+  onSendMessage: (content: string, image?: string) => void;
+  disabled?: boolean;
+  placeholder?: string;
 }
 
-export function MessageInput({ onSendMessage, disabled, placeholder = "Type your message..." }: MessageInputProps) {
-  const [message, setMessage] = useState("")
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const { toast } = useToast()
+export function MessageInput({
+  onSendMessage,
+  disabled,
+  placeholder = "Type your message...",
+}: MessageInputProps) {
+  const [message, setMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!message.trim() && !selectedImage) return
+    if (!message.trim() && !selectedImage) return;
 
-    onSendMessage(message.trim() || "Image", selectedImage || undefined)
-    setMessage("")
-    setSelectedImage(null)
-  }
+    onSendMessage(message.trim() || "Image", selectedImage || undefined);
+    setMessage("");
+    setSelectedImage(null);
+  };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
       // 5MB limit
@@ -40,36 +45,40 @@ export function MessageInput({ onSendMessage, disabled, placeholder = "Type your
         title: "File too large",
         description: "Please select an image smaller than 5MB.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      setSelectedImage(e.target?.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
+      setSelectedImage(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const removeImage = () => {
-    setSelectedImage(null)
+    setSelectedImage(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+      fileInputRef.current.value = "";
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit(e)
+      e.preventDefault();
+      handleSubmit(e);
     }
-  }
+  };
 
   return (
     <div className="border-t bg-background p-4">
       {selectedImage && (
         <div className="mb-3 relative inline-block">
-          <img src={selectedImage || "/placeholder.svg"} alt="Selected" className="max-h-20 rounded-md" />
+          <img
+            src={selectedImage || "/placeholder.svg"}
+            alt="Selected"
+            className="max-h-20 rounded-md"
+          />
           <Button
             variant="destructive"
             size="sm"
@@ -82,33 +91,55 @@ export function MessageInput({ onSendMessage, disabled, placeholder = "Type your
       )}
 
       <form onSubmit={handleSubmit} className="flex gap-2">
-        <div className="flex-1 relative">
+        <div className="flex items-center w-full justify-between relative shadow-sm ring-2 rounded-lg ring-gray-200 dark:ring-gray-600 p-2">
           <Textarea
             value={message}
+            rows={2}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
-            className="min-h-[44px] max-h-32 resize-none pr-12"
+            className="min-h-[44px] flex-1 max-h-32 resize-none ring-white dark:ring-gray-600 border-none outline-none focus:ring-0 active:ring-0 focus:border-none focus:outline-none focus-visible:ring-0 focus-visible:ring-white dark:focus-visible:ring-gray-600 focus-visible:outline-none focus-visible:border-none active:border-none active:outline-none"
             disabled={disabled}
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute right-2 top-2 h-8 w-8 p-0"
-            disabled={disabled}
-          >
-            <ImageIcon className="h-4 w-4" />
-          </Button>
-        </div>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="rounded-lg cursor-not-allowed"
+            >
+              <Mic className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => fileInputRef.current?.click()}
+              className="rounded-lg"
+              disabled={disabled}
+            >
+              <Paperclip className="h-4 w-4" />
+            </Button>
 
-        <Button type="submit" disabled={(!message.trim() && !selectedImage) || disabled} className="h-11">
-          <Send className="h-4 w-4" />
-        </Button>
+            <Button
+              type="submit"
+              size="icon"
+              disabled={(!message.trim() && !selectedImage) || disabled}
+              className="rounded-lg"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </form>
 
-      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageSelect}
+        className="hidden"
+      />
     </div>
-  )
+  );
 }
