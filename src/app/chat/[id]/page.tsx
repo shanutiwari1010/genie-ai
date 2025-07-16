@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { generateAIResponse } from "@/lib/utils/ai-responses";
@@ -24,7 +24,6 @@ export default function ChatPage() {
     addReply,
   } = useChatStore();
 
-  const router = useRouter();
   const params = useParams<{ id: string }>();
 
   const chatroomId = params.id as string;
@@ -59,12 +58,14 @@ export default function ChatPage() {
     }
 
     if (chatroom) setCurrentChatroom(chatroomId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMounted, chatroomId, chatroom]);
 
   useEffect(() => {
     return () => {
       setCurrentChatroom(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const handleSendMessage = async (content: string, image?: string) => {
@@ -90,6 +91,7 @@ export default function ChatPage() {
         replies: [],
       });
     } catch (error) {
+      console.error(error);
       toast.error("Error", {
         description: "Failed to get AI response.",
       });
@@ -121,7 +123,7 @@ export default function ChatPage() {
       image,
     });
 
-    toast({ title: "Reply sent", description: "Reply added to the thread." });
+    toast.success("Reply sent", { description: "Reply added to the thread." });
 
     setTyping(true);
     try {
@@ -131,10 +133,8 @@ export default function ChatPage() {
         role: "assistant",
       });
     } catch {
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: "Failed to get AI reply.",
-        variant: "destructive",
       });
     } finally {
       setTyping(false);
