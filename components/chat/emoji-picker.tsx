@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import type React from "react"
+import React, { useState } from "react";
+import { Smile } from "lucide-react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Smile } from "lucide-react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 
 const EMOJI_CATEGORIES = {
   reactions: ["👍", "👎", "❤️", "😂", "😮", "😢", "😡", "🎉"],
@@ -96,15 +99,16 @@ const EMOJI_CATEGORIES = {
     "💝",
     "💟",
   ],
-}
+};
 
 interface EmojiPickerProps {
-  onEmojiSelect: (emoji: string) => void
-  trigger?: React.ReactNode
+  onEmojiSelect: (emoji: string) => void;
+  trigger?: React.ReactNode;
 }
 
 export function EmojiPicker({ onEmojiSelect, trigger }: EmojiPickerProps) {
-  const [activeCategory, setActiveCategory] = useState<keyof typeof EMOJI_CATEGORIES>("reactions")
+  const [activeCategory, setActiveCategory] =
+    useState<keyof typeof EMOJI_CATEGORIES>("reactions");
 
   return (
     <Popover>
@@ -123,7 +127,9 @@ export function EmojiPicker({ onEmojiSelect, trigger }: EmojiPickerProps) {
                 key={category}
                 variant={activeCategory === category ? "secondary" : "ghost"}
                 size="sm"
-                onClick={() => setActiveCategory(category as keyof typeof EMOJI_CATEGORIES)}
+                onClick={() =>
+                  setActiveCategory(category as keyof typeof EMOJI_CATEGORIES)
+                }
                 className="flex-1 capitalize"
               >
                 {category}
@@ -149,5 +155,5 @@ export function EmojiPicker({ onEmojiSelect, trigger }: EmojiPickerProps) {
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
