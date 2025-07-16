@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Bot } from "lucide-react"
+import { Bot } from "lucide-react";
 
 export function TypingIndicator() {
   return (
@@ -24,5 +24,5 @@ export function TypingIndicator() {
         </div>
       </div>
     </div>
-  )
+  );
 }
