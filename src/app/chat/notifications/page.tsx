@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/ui/loading";
+import Image from "next/image";
 
 const Notifications = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [notificationsData, setNotificationsData] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
+  const [notificationsData] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -29,15 +30,19 @@ const Notifications = () => {
       {loading && <Loading />}
 
       <div className="flex flex-col gap-8">
-        {!notificationsData?.data?.length && !loading && (
+        {!notificationsData?.length && !loading && (
           <div className="flex flex-col items-center text-center max-w-sm mx-auto">
-            <img
+            <Image
+              priority
+              width={100}
+              height={100}
+              loading="eager"
               src="/notification.gif"
               alt="No conversations"
               className="w-[100px] h-[100px] rounded-2xl overflow-hidden"
             />
             <div className="mt-4 flex flex-col gap-2">
-              <h3 className="text-lg font-normal">You're All Caught Up</h3>
+              <h3 className="text-lg font-normal">You&apos;re All Caught Up</h3>
               <p className="text-muted-foreground">
                 Feel free to explore the platform or check back later for fresh
                 insights. Stay Tuned!
