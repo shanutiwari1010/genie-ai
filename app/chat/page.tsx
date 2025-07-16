@@ -1,22 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/lib/stores/auth-store";
-import { useChatStore } from "@/lib/stores/chat-store";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChatGreeting from "@/components/chat/chat-greeting";
+import { useChatroomActions } from "@/hooks/useChatroomActions";
 
 export default function ChatPage() {
   const router = useRouter();
-  const { toast } = useToast();
-  const { createChatroom } = useChatStore();
   const { isAuthenticated } = useAuthStore();
 
   const [isCreating, setIsCreating] = useState(false);
@@ -26,21 +21,18 @@ export default function ChatPage() {
     router.push(`/chat/${id}`);
   };
 
-  const handleCreateChatroom = () => {
+  const { handleCreateChatroom } = useChatroomActions();
+
+  const handleCreate = () => {
     if (!newChatroomTitle.trim()) return;
 
     setIsCreating(true);
     setTimeout(() => {
-      const id = createChatroom(newChatroomTitle.trim());
-      setNewChatroomTitle("");
-      setIsCreating(false);
-
-      toast({
-        title: "Chatroom Created",
-        description: `"${newChatroomTitle}" has been created successfully.`,
+      handleCreateChatroom(newChatroomTitle.trim(), (id) => {
+        setNewChatroomTitle("");
+        setIsCreating(false);
+        handleChatroomSelect(id);
       });
-
-      handleChatroomSelect(id);
     }, 500);
   };
 
@@ -70,14 +62,13 @@ export default function ChatPage() {
             placeholder="Enter chatroom title..."
             value={newChatroomTitle}
             onChange={(e) => setNewChatroomTitle(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleCreateChatroom()}
+            onKeyPress={(e) => e.key === "Enter" && handleCreate()}
           />
           <Button
-            onClick={handleCreateChatroom}
+            onClick={handleCreate}
             disabled={!newChatroomTitle.trim() || isCreating}
-            className="w-full"
+            className="w-full "
           >
-            <Plus className="mr-2 h-4 w-4" />
             {isCreating ? "Creating..." : "Create Chatroom"}
           </Button>
         </CardContent>
