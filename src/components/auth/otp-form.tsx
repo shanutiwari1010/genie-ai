@@ -82,6 +82,7 @@ export function OTPForm({
         });
       }
     } catch (error) {
+      console.error(error);
       toast.error("Error", {
         description: "Failed to verify OTP. Please try again.",
       });
@@ -101,6 +102,7 @@ export function OTPForm({
         description: `New verification code sent to ${fullPhone}`,
       });
     } catch (error) {
+      console.error(error);
       toast.error("Error", {
         description: "Failed to resend OTP. Please try again.",
       });
