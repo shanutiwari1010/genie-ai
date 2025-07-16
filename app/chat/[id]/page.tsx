@@ -24,6 +24,7 @@ export default function ChatPage() {
     removeReaction,
     addReply,
   } = useChatStore();
+
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -31,38 +32,44 @@ export default function ChatPage() {
   const chatroomId = params.id as string;
   const chatroom = getChatroom(chatroomId);
 
+  const [hasMounted, setHasMounted] = useState(false);
   const [displayedMessages, setDisplayedMessages] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
+  // ✅ Hydration-safe client-only logic
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/auth");
-      return;
-    }
+    setHasMounted(true);
+  }, []);
 
-    if (!chatroom) {
-      router.push("/chat");
-      return;
-    }
+  // ✅ Dummy message injection after hydration
+  useEffect(() => {
+    if (!hasMounted || !isAuthenticated || !chatroom) return;
 
-    // Inject dummy messages if empty (dev mode only)
-    if ( process.env.NODE_ENV === "development" &&
-    typeof window !== "undefined" &&
-    chatroom.messages.length === 0) {
+    if (
+      process.env.NODE_ENV === "development" &&
+      chatroom.messages.length === 0
+    ) {
       const dummyMessages = generateDummyMessages(100);
       dummyMessages.forEach((msg) => {
         addMessage(chatroomId, {
           content: msg.content,
           role: msg.role,
           image: msg.image,
+          reactions: msg.reactions,
           replies: msg.replies,
-           reactions: msg.reactions, 
         });
       });
     }
 
     setCurrentChatroom(chatroomId);
-  }, [isAuthenticated, chatroom, chatroomId, router, setCurrentChatroom]);
+  }, [hasMounted, isAuthenticated, chatroom, chatroomId]);
+
+  // ✅ Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setCurrentChatroom(null);
+    };
+  }, [params.id]);
 
   const handleSendMessage = async (content: string, image?: string) => {
     if (!chatroom) return;
@@ -105,7 +112,10 @@ export default function ChatPage() {
   const handleReactionAdd = (messageId: string, emoji: string) => {
     if (!chatroom || !user) return;
     addReaction(chatroomId, messageId, emoji, user.id);
-    toast({ title: "Reaction added", description: `You reacted with ${emoji}` });
+    toast({
+      title: "Reaction added",
+      description: `You reacted with ${emoji}`,
+    });
   };
 
   const handleReactionRemove = (messageId: string, reactionId: string) => {
@@ -162,13 +172,7 @@ export default function ChatPage() {
     }, 1000);
   };
 
-  useEffect(() => {
-    return () => {
-      setCurrentChatroom(null);
-    };
-  }, [params.id]);
-
-  if (!isAuthenticated || !chatroom) {
+  if (!hasMounted || !isAuthenticated || !chatroom) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
