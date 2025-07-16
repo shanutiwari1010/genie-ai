@@ -36,17 +36,16 @@ export default function ChatPage() {
   const [displayedMessages, setDisplayedMessages] = useState(20);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  // ✅ Hydration-safe client-only logic
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
-  // ✅ Dummy message injection after hydration
+  // ✅ Client-only message seeding
   useEffect(() => {
-    if (!hasMounted || !isAuthenticated || !chatroom) return;
-
     if (
+      hasMounted &&
       process.env.NODE_ENV === "development" &&
+      chatroom &&
       chatroom.messages.length === 0
     ) {
       const dummyMessages = generateDummyMessages(100);
@@ -61,10 +60,9 @@ export default function ChatPage() {
       });
     }
 
-    setCurrentChatroom(chatroomId);
-  }, [hasMounted, isAuthenticated, chatroom, chatroomId]);
+    if (chatroom) setCurrentChatroom(chatroomId);
+  }, [hasMounted, chatroomId, chatroom]);
 
-  // ✅ Cleanup on unmount
   useEffect(() => {
     return () => {
       setCurrentChatroom(null);
@@ -82,16 +80,11 @@ export default function ChatPage() {
       replies: [],
     });
 
-    toast({
-      title: "Message sent",
-      description: "Your message has been sent to Gemini.",
-    });
+    toast({ title: "Message sent", description: "Your message has been sent." });
 
     setTyping(true);
-
     try {
       const aiResponse = await generateAIResponse(content);
-
       addMessage(chatroomId, {
         content: aiResponse,
         role: "assistant",
@@ -101,7 +94,7 @@ export default function ChatPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to get AI response. Please try again.",
+        description: "Failed to get AI response.",
         variant: "destructive",
       });
     } finally {
@@ -112,10 +105,6 @@ export default function ChatPage() {
   const handleReactionAdd = (messageId: string, emoji: string) => {
     if (!chatroom || !user) return;
     addReaction(chatroomId, messageId, emoji, user.id);
-    toast({
-      title: "Reaction added",
-      description: `You reacted with ${emoji}`,
-    });
   };
 
   const handleReactionRemove = (messageId: string, reactionId: string) => {
@@ -136,24 +125,19 @@ export default function ChatPage() {
       image,
     });
 
-    toast({
-      title: "Reply sent",
-      description: "Your reply has been added to the thread.",
-    });
+    toast({ title: "Reply sent", description: "Reply added to the thread." });
 
     setTyping(true);
-
     try {
       const aiResponse = await generateAIResponse(content);
-
       addReply(chatroomId, parentMessageId, {
         content: aiResponse,
         role: "assistant",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
-        description: "Failed to get AI response. Please try again.",
+        description: "Failed to get AI reply.",
         variant: "destructive",
       });
     } finally {
@@ -165,12 +149,12 @@ export default function ChatPage() {
     if (!chatroom || isLoadingMore) return;
 
     setIsLoadingMore(true);
-
     setTimeout(() => {
       setDisplayedMessages((prev) => prev + 20);
       setIsLoadingMore(false);
     }, 1000);
   };
+
 
   if (!hasMounted || !isAuthenticated || !chatroom) {
     return (
