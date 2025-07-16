@@ -55,6 +55,8 @@ export default function ChatPage() {
       content,
       role: "user",
       image,
+      reactions: [],
+      replies: [],
     });
 
     toast({
@@ -71,6 +73,8 @@ export default function ChatPage() {
       addMessage(chatroomId, {
         content: aiResponse,
         role: "assistant",
+        reactions: [],
+    replies: [],
       });
     } catch (error) {
       toast({
