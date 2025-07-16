@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChatGreeting from "@/components/chat/chat-greeting";
 import { useChatroomActions } from "@/hooks/useChatroomActions";
-import ChatBar from "@/components/chat/chat-bar";
 
 export default function ChatPage() {
   const router = useRouter();
