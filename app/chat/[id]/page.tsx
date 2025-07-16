@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { generateAIResponse } from "@/lib/utils/ai-responses";
+import { generateDummyMessages } from "@/lib/utils/generateDummyMessages";
 
 import { MessageList } from "@/components/chat/message-list";
 import { MessageInput } from "@/components/chat/message-input";
@@ -44,13 +45,28 @@ export default function ChatPage() {
       return;
     }
 
+    // Inject dummy messages if empty (dev mode only)
+    if ( process.env.NODE_ENV === "development" &&
+    typeof window !== "undefined" &&
+    chatroom.messages.length === 0) {
+      const dummyMessages = generateDummyMessages(100);
+      dummyMessages.forEach((msg) => {
+        addMessage(chatroomId, {
+          content: msg.content,
+          role: msg.role,
+          image: msg.image,
+          replies: msg.replies,
+           reactions: msg.reactions, 
+        });
+      });
+    }
+
     setCurrentChatroom(chatroomId);
   }, [isAuthenticated, chatroom, chatroomId, router, setCurrentChatroom]);
 
   const handleSendMessage = async (content: string, image?: string) => {
     if (!chatroom) return;
 
-    // Add user message
     addMessage(chatroomId, {
       content,
       role: "user",
@@ -64,7 +80,6 @@ export default function ChatPage() {
       description: "Your message has been sent to Gemini.",
     });
 
-    // Simulate AI response
     setTyping(true);
 
     try {
@@ -74,7 +89,7 @@ export default function ChatPage() {
         content: aiResponse,
         role: "assistant",
         reactions: [],
-    replies: [],
+        replies: [],
       });
     } catch (error) {
       toast({
@@ -89,18 +104,12 @@ export default function ChatPage() {
 
   const handleReactionAdd = (messageId: string, emoji: string) => {
     if (!chatroom || !user) return;
-
     addReaction(chatroomId, messageId, emoji, user.id);
-
-    toast({
-      title: "Reaction added",
-      description: `You reacted with ${emoji}`,
-    });
+    toast({ title: "Reaction added", description: `You reacted with ${emoji}` });
   };
 
   const handleReactionRemove = (messageId: string, reactionId: string) => {
     if (!chatroom) return;
-
     removeReaction(chatroomId, messageId, reactionId);
   };
 
@@ -111,7 +120,6 @@ export default function ChatPage() {
   ) => {
     if (!chatroom) return;
 
-    // Add user reply
     addReply(chatroomId, parentMessageId, {
       content,
       role: "user",
@@ -123,7 +131,6 @@ export default function ChatPage() {
       description: "Your reply has been added to the thread.",
     });
 
-    // Simulate AI response to the thread
     setTyping(true);
 
     try {
@@ -149,7 +156,6 @@ export default function ChatPage() {
 
     setIsLoadingMore(true);
 
-    // Simulate loading delay
     setTimeout(() => {
       setDisplayedMessages((prev) => prev + 20);
       setIsLoadingMore(false);
@@ -174,7 +180,7 @@ export default function ChatPage() {
   const hasMore = chatroom.messages.length > displayedMessages;
 
   return (
-    <div className="flex-1 ">
+    <div className="flex-1">
       <MessageList
         messages={visibleMessages}
         isTyping={isTyping}
@@ -186,7 +192,7 @@ export default function ChatPage() {
         onReply={handleReply}
       />
 
-      <div className="absolute bottom-0 inset-x-0 ">
+      <div className="absolute bottom-0 inset-x-0">
         <MessageInput onSendMessage={handleSendMessage} disabled={isTyping} />
       </div>
     </div>
