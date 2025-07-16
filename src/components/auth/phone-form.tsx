@@ -81,6 +81,7 @@ export function PhoneForm({ onOTPSent }: PhoneFormProps) {
 
       onOTPSent(data.phone, data.countryCode, otp);
     } catch (error) {
+      console.error(error)
       toast.error("Error", {
         description: "Failed to send OTP. Please try again.",
       });
