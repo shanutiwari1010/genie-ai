@@ -1,25 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
-import type { Message } from "@/lib/stores/chat-store"
-import { useAuthStore } from "@/lib/stores/auth-store"
-import { Copy, Check, User, Bot, MoreHorizontal } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
-import { cn } from "@/lib/utils"
-import { EmojiPicker } from "./emoji-picker"
-import { ReactionDisplay } from "./reaction-display"
-import { ThreadView } from "./thread-view"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { Copy, Check, User, Bot, MoreHorizontal } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import type { Message } from "@/lib/stores/chat-store";
+import { useAuthStore } from "@/lib/stores/auth-store";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ThreadView } from "./thread-view";
+import { EmojiPicker } from "./emoji-picker";
+import { Button } from "@/components/ui/button";
+import { ReactionDisplay } from "./reaction-display";
 
 interface MessageBubbleProps {
-  message: Message
-  onReactionAdd?: (messageId: string, emoji: string) => void
-  onReactionRemove?: (messageId: string, reactionId: string) => void
-  onReply?: (parentMessageId: string, content: string, image?: string) => void
-  showThreadButton?: boolean
-  isReply?: boolean
+  message: Message;
+  onReactionAdd?: (messageId: string, emoji: string) => void;
+  onReactionRemove?: (messageId: string, reactionId: string) => void;
+  onReply?: (parentMessageId: string, content: string, image?: string) => void;
+  showThreadButton?: boolean;
+  isReply?: boolean;
 }
 
 export function MessageBubble({
@@ -30,53 +37,56 @@ export function MessageBubble({
   showThreadButton = true,
   isReply = false,
 }: MessageBubbleProps) {
-  const [copied, setCopied] = useState(false)
-  const [showActions, setShowActions] = useState(false)
-  const { toast } = useToast()
-  const { user } = useAuthStore()
+  const [copied, setCopied] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const { toast } = useToast();
+  const { user } = useAuthStore();
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message.content)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
 
       toast({
         title: "Copied!",
         description: "Message copied to clipboard.",
-      })
+      });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to copy message.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleReactionAdd = (emoji: string) => {
     if (onReactionAdd && user) {
-      onReactionAdd(message.id, emoji)
+      onReactionAdd(message.id, emoji);
     }
-  }
+  };
 
   const handleReactionRemove = (reactionId: string) => {
     if (onReactionRemove) {
-      onReactionRemove(message.id, reactionId)
+      onReactionRemove(message.id, reactionId);
     }
-  }
+  };
 
   const handleReply = (content: string, image?: string) => {
     if (onReply) {
-      onReply(message.id, content, image)
+      onReply(message.id, content, image);
     }
-  }
+  };
 
-  const isUser = message.role === "user"
+  const isUser = message.role === "user";
 
   return (
     <div
-      className={cn("flex gap-3 group", isUser ? "justify-end" : "justify-start")}
+      className={cn(
+        "flex gap-3 group",
+        isUser ? "justify-end" : "justify-start"
+      )}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
@@ -92,8 +102,10 @@ export function MessageBubble({
         <div
           className={cn(
             "relative rounded-lg px-4 py-2 break-words",
-            isUser ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
-            isReply && "border-l-2 border-primary/20 ml-2",
+            isUser
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground",
+            isReply && "border-l-2 border-primary/20 ml-2"
           )}
         >
           {message.image && (
@@ -114,11 +126,20 @@ export function MessageBubble({
             <div
               className={cn(
                 "absolute -top-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background border rounded-md shadow-sm p-1",
-                isUser ? "-left-20" : "-right-20",
+                isUser ? "-left-20" : "-right-20"
               )}
             >
-              <Button variant="ghost" size="sm" onClick={handleCopy} className="h-6 w-6 p-0">
-                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopy}
+                className="h-6 w-6 p-0"
+              >
+                {copied ? (
+                  <Check className="h-3 w-3" />
+                ) : (
+                  <Copy className="h-3 w-3" />
+                )}
               </Button>
 
               <EmojiPicker
@@ -142,7 +163,9 @@ export function MessageBubble({
                     Copy message
                   </DropdownMenuItem>
                   {showThreadButton && onReply && (
-                    <DropdownMenuItem onClick={() => {}}>Reply in thread</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {}}>
+                      Reply in thread
+                    </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -158,7 +181,9 @@ export function MessageBubble({
         />
 
         <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-          <span>{formatDistanceToNow(message.timestamp, { addSuffix: true })}</span>
+          <span>
+            {formatDistanceToNow(message.timestamp, { addSuffix: true })}
+          </span>
 
           {/* Thread button */}
           {showThreadButton && onReply && (
@@ -180,5 +205,5 @@ export function MessageBubble({
         </div>
       )}
     </div>
-  )
+  );
 }
