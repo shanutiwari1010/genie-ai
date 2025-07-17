@@ -27,6 +27,9 @@ A modern Gemini-style conversational AI chat app built as part of the **Frontend
 - Conversational layout with AI/user messages, timestamps, and typing indicators.
 - Throttled simulated AI replies using `setTimeout`.
 - Client-side pagination with **reverse infinite scroll**.
+- 100 dummy messages generated for testing.
+- Client-side pagination with 20 messages per page.
+- Skeleton loading while older messages are fetched.
 - Supports image uploads with inline preview.
 - Copy message to clipboard on hover.
 - Users can react to any message with emojis (👍, ❤️, 😂, etc.)
