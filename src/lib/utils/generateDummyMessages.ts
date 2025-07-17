@@ -8,7 +8,7 @@ export function generateDummyMessages(count =0): Message[] {
     return {
       id: `msg-${i}`,
       content: isUser
-        ? `User message #${i + 1}`
+        ? `User dummy message #${i + 1}`
         : `Assistant response to message #${i}`,
       role: isUser ? "user" : "assistant",
       timestamp: new Date(now - (count - i) * 60000),
