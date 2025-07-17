@@ -39,12 +39,7 @@ export default function ChatPage() {
 
   // ✅ Client-only message seeding
   useEffect(() => {
-    if (
-      hasMounted &&
-      process.env.NODE_ENV === "development" &&
-      chatroom &&
-      chatroom.messages.length === 0
-    ) {
+    if (hasMounted && chatroom && chatroom.messages.length === 0) {
       const dummyMessages = generateDummyMessages(100);
       dummyMessages.forEach((msg) => {
         addMessage(chatroomId, {
