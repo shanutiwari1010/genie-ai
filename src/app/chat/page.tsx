@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
@@ -12,7 +12,6 @@ import { useChatroomActions } from "@/hooks/useChatroomActions";
 
 export default function ChatPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
 
   const [isCreating, setIsCreating] = useState(false);
   const [newChatroomTitle, setNewChatroomTitle] = useState("");
