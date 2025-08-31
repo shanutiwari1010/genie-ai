@@ -17,18 +17,21 @@ import { NavUser } from "./nav-user";
 import { NavChat } from "./nav-chat";
 import { Input } from "./ui/input";
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
-const data = {
-  user: {
-    name: "Emily",
-    email: "emily@example.com",
-    avatar: "/emily.avif",
-  },
-};
+// const data = {
+//   user: {
+//     name: ``,
+//     email: "emily@example.com",
+//     avatar: "/emily.avif",
+//   },
+// };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [searchTerm, setSearchTerm] = useState("");
   const { isMobile, setOpenMobile } = useSidebar();
+
+  const { user } = useUser();
 
   const handleNewChatClick = () => {
     if (isMobile) {
@@ -47,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Sparkles className="size-4 text-white" />
                 </div>
                 <div>
-                  <h1 className="truncate font-medium">Gemini AI</h1>
+                  <h1 className="truncate font-medium">GenieAI</h1>
                   <p className="text-xs text-muted-foreground">
                     Always ready to help
                   </p>
@@ -79,7 +82,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavChat searchTerm={searchTerm} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && (
+          <NavUser
+            user={{
+              name: user.fullName || user.firstName || "User",
+              email: user.primaryEmailAddress?.emailAddress || "",
+              avatar: user.imageUrl || "",
+            }}
+          />
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
