@@ -14,7 +14,7 @@ export function TypingIndicator() {
       <div className="flex flex-col">
         <div className="bg-muted text-muted-foreground rounded-lg px-4 py-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm">Gemini is typing</span>
+            <span className="text-sm">Genie is typing</span>
             <div className="typing-indicator">
               <span></span>
               <span></span>
