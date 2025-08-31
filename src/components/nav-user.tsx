@@ -38,7 +38,7 @@ export function NavUser({
     logout();
     localStorage.removeItem("auth-storage");
     localStorage.removeItem("chat-storage");
-    router.replace("/auth");
+    router.replace("/");
     router.refresh();
   };
 
