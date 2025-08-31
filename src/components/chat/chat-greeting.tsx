@@ -3,11 +3,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 const ChatGreeting = () => {
+  const { user } = useUser();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const GREETING_KEYWORDS = [
-    `Welcome User!`,
+    `Welcome ${user?.firstName}!`,
     "What do you want to know?",
     "How can I help you today?",
   ];
