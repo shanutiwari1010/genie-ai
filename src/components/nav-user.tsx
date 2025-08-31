@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { ChevronsUpDown, LogOut } from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,7 +19,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/lib/stores/auth-store";
 
 export function NavUser({
   user,
@@ -30,17 +29,7 @@ export function NavUser({
     avatar: string;
   };
 }) {
-  const router = useRouter();
-  const { logout } = useAuthStore();
   const { isMobile } = useSidebar();
-
-  const handleLogout = () => {
-    logout();
-    localStorage.removeItem("auth-storage");
-    localStorage.removeItem("chat-storage");
-    router.replace("/");
-    router.refresh();
-  };
 
   return (
     <SidebarMenu>
@@ -81,10 +70,12 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <SignOutButton>
+              <DropdownMenuItem>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </SignOutButton>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
