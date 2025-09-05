@@ -1,6 +1,6 @@
-# Genie AI – Frontend Assignment (Kuvaka Tech)
+# Genie AI
 
-A modern Gemini-style conversational AI chat app built as part of the **Frontend Developer Assignment** at **Kuvaka Tech**.
+A modern Gemini-style conversational AI chat app.
 
 🔗 **Live Demo**: [https://genie-ai-chat.vercel.app](https://genie-ai-chat.vercel.app)  
 🔗 **Repository**: [https://github.com/shanutiwari1010/genie-ai](https://github.com/shanutiwari1010/genie-ai)
